@@ -1,0 +1,20 @@
+description: 
+  FPGA Mailbox using the axi_msic (AXI-Interface) and axi_intc (interrupt only)
+
+compatible: "mausys,mbox-pci"
+
+include: [base.yaml, mailbox-controller.yaml]
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: true
+
+  msi-vector:
+    type: int
+    default: 0
+
+mbox-cells:
+  - channel

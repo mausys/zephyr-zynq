@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config LOG_BACKEND_RPMSG
+	bool "OpenAMP RPMSG backend"
+
+if LOG_BACKEND_RPMSG
+
+backend = RPMSG
+backend-str = rpmsg
+source "subsys/logging/Kconfig.template.log_format_config"
+
+endif # LOG_BACKEND_RPMSG

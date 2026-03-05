@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config MBOX_MAUSYS_PCI
+	bool "FPFA mailbox"
+	default y
+	depends on DT_HAS_MAUSYS_MBOX_PCI_ENABLED
+	help
+	  Driver for FPGA Mailbox
