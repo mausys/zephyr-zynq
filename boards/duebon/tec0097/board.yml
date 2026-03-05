@@ -1,0 +1,6 @@
+board:
+  name: tec0097
+  full_name: ZYNQ PCIe Board
+  vendor: duebon
+  socs:
+  - name: xc7z015

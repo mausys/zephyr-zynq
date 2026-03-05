@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+
+identifier: tec0097
+name: Duebon TEC0097
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 524288
+supported:
+  - gpio
+vendor: duebon

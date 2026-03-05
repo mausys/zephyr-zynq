@@ -1,0 +1,152 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <xilinx/zynq7000.dtsi>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include "tec0097-pinctrl.dtsi"
+
+/ {
+	model = "Duebon Engineering GmbH ZYNQ PCIe Board";
+	compatible = "duebon,zynq-tec0097", "xlnx,zynq-7000";
+
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	chosen {
+		zephyr,sram = &ddr0;
+		zephyr,ocm = &ocm_low;
+		zephyr,ram-console = &snippet_ram_console;
+		zephyr,log-rpmsg = &ept_log;
+		openamp,resource-table = &rsc_tbl;
+	};
+
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a9";
+			reg = <0>;
+		};
+
+		cpu1: cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a9";
+			reg = <1>;
+		};
+	};
+
+	ddr0: memory@300000 {
+		compatible = "mmio-sram";
+		reg = <0x00300000 DT_SIZE_M(512)>;
+	};
+
+
+	mbox: mbox@40020000 {
+		interrupt-parent = <&gic>;
+		compatible = "mausys,mbox-pci";
+		reg = <0x40020000 0x2c>;
+		interrupts = <GIC_SPI 29 IRQ_TYPE_EDGE IRQ_DEFAULT_PRIORITY>;
+		#mbox-cells = <1>;
+	};
+
+	snippet_ram_console: memory@1a4000 {
+		compatible = "zephyr,memory-region";
+		reg = <0x1a4000 DT_SIZE_K(4)>;
+		zephyr,memory-region = "RAM_CONSOLE";
+	};
+
+	vdev0vring0: memory@1400 {
+		compatible= "zephyr,memory-region";
+		zephyr,memory-region = "vdev0vring0";
+		reg = <0x1400 0x2000>;
+	};
+
+	vdev0vring1: memory@3400 {
+		compatible= "zephyr,memory-region";
+		zephyr,memory-region = "vdev0vring1";
+		reg = <0x3400 0x2000>;
+	};
+
+	vdev0buffer: memory@5400 {
+		compatible= "zephyr,memory-region";
+		zephyr,memory-region = "vdev0buffer";
+		reg = <0x5400 0x8000>;
+	};
+
+	remoteproc {
+		rsc_tbl: resource_table {
+			compatible = "openamp,resource-table";
+			carveouts = <&vdev0vring0 &vdev0vring1 &vdev0buffer>;
+			vdevs = <&vdev0>;
+		};
+
+		vrings {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			vdev0_tx: vring@0 {
+				compatible = "openamp,vring";
+				#vring-cells = <0>;
+				notify-id = <0>;
+				memory-region = <&vdev0vring0>;
+				num-buffers = <8>;
+				mboxes = <&mbox 0>;
+				reg = <0>;
+			};
+
+			vdev0_rx: vring@1 {
+				compatible = "openamp,vring";
+				#vring-cells = <0>;
+				notify-id = <1>;
+				memory-region = <&vdev0vring1>;
+				num-buffers = <8>;
+				mboxes = <&mbox 0>;
+				reg = <1>;
+			};
+		};
+
+		vdevs {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			vdev0: vdev@0 {
+				compatible = "openamp,rpmsg-virtio-device";
+				vrings = <&vdev0_tx &vdev0_rx>;
+				vring-names = "tx", "rx";
+				memory-region = <&vdev0buffer>;
+				reg = <0>;
+			};
+		};
+	};
+};
+
+&vdev0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	ept_log: endpoint@0 {
+		status = "okay";
+		compatible = "openamp,rpmsg-endpoint";
+		type = "rpmsg-raw";
+		reg = <0x0>;
+	};
+  
+  
+	ept_rpc: endpoint@11 {
+		status = "okay";
+		compatible = "openamp,rpmsg-endpoint";
+		type = "rpmsg-raw";
+		reg = <0x11>;
+	};
+};
+
+&psgpio {
+	status = "okay";
+};
