@@ -2,5 +2,4 @@
 
 menu "Drivers"
 rsource "mbox/Kconfig"
-rsource "remoteproc/Kconfig"
 endmenu

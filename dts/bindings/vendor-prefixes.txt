@@ -12,5 +12,4 @@
 
 # zephyr-keep-sorted-start
 mausys	Maurer Systems GmbH
-openamp	OpenAMP project
 # zephyr-keep-sorted-stop

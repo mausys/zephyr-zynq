@@ -2,4 +2,3 @@
 
 add_subdirectory_ifdef(CONFIG_MBOX mbox)
 
-add_subdirectory_ifdef(CONFIG_REMOTEPROC remoteproc)
