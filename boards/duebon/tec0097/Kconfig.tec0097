@@ -1,4 +1,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 config BOARD_TEC0097
-	select SOC_XILINX_XC7Z015
+	select SOC_XC7Z015
